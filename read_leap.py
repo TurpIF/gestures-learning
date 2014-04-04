@@ -21,14 +21,22 @@ class MyListener(Leap.Listener):
         Print the header of a CSV output corresponding to the read data of the
         leap motion.
         """
-        nor = lambda h: 'H%d_NorX H%d_NorY H%d_NorZ' % (h, h, h)
-        vel = lambda h: 'H%d_VelX H%d_VelY H%d_VelZ' % (h, h, h)
-        pos = lambda h: 'H%d_PosX H%d_PosY H%d_PosZ' % (h, h, h)
-        dir = lambda h: 'H%d_DirX H%d_DirY H%d_DirZ' % (h, h, h)
-        cen = lambda h: 'H%d_CenX H%d_CenY H%d_CenZ' % (h, h, h)
-        rad = lambda h: 'H%d_Rad' % h
-        use = [nor, vel, pos, dir]
-        print ' '.join(' '.join(map(lambda f: f(h), use))
+        nor = lambda h:'H%d_NorX H%d_NorY H%d_NorZ' % (h,h,h)
+        vel = lambda h:'H%d_VelX H%d_VelY H%d_VelZ' % (h,h,h)
+        pos = lambda h:'H%d_PosX H%d_PosY H%d_PosZ' % (h,h,h)
+        dir = lambda h:'H%d_DirX H%d_DirY H%d_DirZ' % (h,h,h)
+        cen = lambda h:'H%d_CenX H%d_CenY H%d_CenZ' % (h,h,h)
+        rad = lambda h:'H%d_Rad' % h
+        use = [pos, vel, dir, nor]
+
+        fpos = lambda h,f:'H%d_F%d_PosX H%d_F%d_PosY H%d_F%d_PosZ'%(h,f,h,f,h,f)
+        fvel = lambda h,f:'H%d_F%d_VelX H%d_F%d_VelY H%d_F%d_VelZ'%(h,f,h,f,h,f)
+        fdir = lambda h,f:'H%d_F%d_DirX H%d_F%d_DirY H%d_F%d_DirZ'%(h,f,h,f,h,f)
+        fdis = lambda h,f:'H%d_F%d_Dis'%(h,f)
+        fuse = [fpos, fvel, fdir, fdis]
+        print ' '.join(' '.join(map(lambda c: c(h), use)) + ' ' +
+                ' '.join(' '.join(map(lambda c: c(h, f), fuse))
+                    for f in xrange(self.nb_fingers))
                 for h in xrange(self.nb_hands))
 
     def on_frame(self, controller):
@@ -54,8 +62,21 @@ class MyListener(Leap.Listener):
             dir = vec_to_str(h.direction)
             cen = vec_to_str(h.sphere_center)
             rad = str(h.sphere_radius)
-            use = [nor, vel, pos, dir]
-            print ' '.join(use)
+            use = [pos, vel, dir, nor]
+
+            h_str = ' '.join(use)
+            f_str = []
+            for f in h.fingers:
+                fpos = vec_to_str(f.tip_position)
+                fvel = vec_to_str(f.tip_velocity)
+                fdir = vec_to_str(f.direction)
+                fdis = str(f.touch_distance)
+                fuse = [fpos, fvel, fdir, fdis]
+                f_str.append(' '.join(fuse))
+
+            print h_str + ' ' + ' '.join(f_str)
+
+            # print ' '.join(use)
 
 if __name__ == '__main__':
     nb_hands = 1
