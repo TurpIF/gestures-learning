@@ -58,9 +58,12 @@ class Perceptron(object):
         Real [0 ; 1] : An real between 0 and 1 corresponding to the result of a
         sigmoid function.
         """
-        param = 1.0
         return 1 if aggregated_input >= 0 else 0
-        return 1.0 / (1.0 + math.exp(- param * aggregated_input))
+        param = 1.0
+        try:
+            return 1.0 / (1.0 + math.exp(-param * aggregated_input))
+        except OverflowError:
+            return 1.0
 
     def weights_fix(self, X, true_result, result):
         """
