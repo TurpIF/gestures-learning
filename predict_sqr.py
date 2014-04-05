@@ -16,6 +16,10 @@ différence de déplacement sur un axe par rapport à la prise d'origine (t = 0)
 
 Un mouvement est alors représenté par une fonction de déplacement dx :
     dx(t=0) dx(t=1) ... dx(t=T)
+
+Il semble qu'avoir plusieurs représentation pour un même déplacement (en
+rajoutant du bruit sur les dx) ne favorise pas l'apprentissage et le détruit
+même.
 """
 from sklearn import svm
 import math
