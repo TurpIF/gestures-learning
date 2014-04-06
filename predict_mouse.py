@@ -34,10 +34,14 @@ Pour le mouvement RIGHT :
     dx(t=4) = 4
     ...
     dx(t=T) = T
+
+Il a fallu rajouter un mouvement NULL qui s'identifie à un manque de mouvement
+de la souris.
 """
 
 import pymouse
-import sklearn
+import time
+from sklearn import svm
 
 def count_loops(t):
     """
@@ -46,7 +50,6 @@ def count_loops(t):
     into stdout.
     """
     mouse = pymouse.PyMouse()
-    import time
     begin = time.time()
     N = 0
     while time.time() - begin < 3:
@@ -55,4 +58,43 @@ def count_loops(t):
     return N
 
 if __name__ == '__main__':
-    print count_loops(3) # ~= 20 000
+    # print count_loops(3) # ~= 20 000
+
+    size = 20
+    LEFT = map(lambda x: (-x, 0), xrange(size))
+    RIGHT = map(lambda x: (x, 0), xrange(size))
+    UP = map(lambda x: (0, -x), xrange(size))
+    DOWN = map(lambda x: (0, x), xrange(size))
+    NULL = [(0, 0) for _ in xrange(size)]
+    XY = [(LEFT, 'LEFT')] \
+            + [(RIGHT, 'RIGHT')] \
+            + [(UP, 'UP')] \
+            + [(DOWN, 'DOWN')] \
+            + [(NULL, 'NULL')]
+    print XY
+    X, Y = zip(*XY)
+    X = map(lambda x: tuple(sum(map(list, x), [])), X)
+    print X
+    print Y[0], X[0]
+    print Y[1], X[1]
+    print Y[2], X[2]
+
+    learner = svm.LinearSVC()
+    predictor = learner.fit(X, Y)
+
+    mouse = pymouse.PyMouse()
+
+    hist_origin = []
+    try:
+        while True:
+            pos = mouse.position()
+            hist_origin.append(pos)
+            if len(hist_origin) >= size:
+                o = hist_origin[0]
+                X = map(lambda x: (x[0] - o[0], x[1] - o[1]), hist_origin)
+                X = tuple(sum(map(list, X), []))
+                hist_origin = hist_origin[1:]
+                print predictor.predict(X)
+            time.sleep(0.005)
+    except KeyboardInterrupt:
+        pass
