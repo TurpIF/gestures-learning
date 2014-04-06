@@ -37,6 +37,12 @@ Pour le mouvement RIGHT :
 
 Il a fallu rajouter un mouvement NULL qui s'identifie à un manque de mouvement
 de la souris.
+
+L'ajout de la dimension Y de la souris peut se faire et les mouvements UP et
+DOWN ont été intégré. Il n'est pas possible avec scikit learn d'utiliser des
+tuples de tuples pour décrire un mouvement. Cad un mouvement ne peut pas être
+(dM(t=0), ..., dM(t=T)) avec les dM un tuple (dx, dy) de R^2. Il faut que la
+descriptions soit aplatie et ne forme qu'un tuple de réel.
 """
 
 import pymouse
