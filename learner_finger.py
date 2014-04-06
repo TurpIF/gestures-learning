@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os, sys
 this_dir = os.path.dirname(os.path.realpath(__name__))
 sys.path.insert(0, os.path.join(this_dir, 'libs', 'leap'))
@@ -32,6 +35,17 @@ class FingerPoint(object):
         info += list(self.velocity)
         info += list(self.direction)
         return '%f %f %f %f %f %f %f %f %f' % tuple(info)
+
+    def to_tuple(self):
+        """
+        Resume the point to a unique tuple corresponding to (posx, posy, posz,
+        velx, vely, velz, dirx, diry, dirz).
+
+        Returns:
+        A tuple representation of the point.
+        """
+        ls = [self.position, self.velocity, self.direction]
+        return tuple(sum(map(list, ls), []))
 
     @classmethod
     def from_words(cls, words):
@@ -86,6 +100,16 @@ class FingerMove(object):
         """
         pos_str = map(str, self.data)
         return '%s %s' % (self.name, ' '.join(pos_str))
+
+    def to_tuple(self):
+        """
+        Resume the move to a unique tuple.
+
+        Returns:
+        A tuple representation of the move.
+        """
+        d = sum(map(lambda x: list(x.to_tuple()), self.data), [])
+        return tuple([self.name] + d)
 
     @classmethod
     def from_string(cls, string):
@@ -156,8 +180,6 @@ def acquire_move(ctrl, size, time_sleep=0.005):
 
     finger = frame.hands[0].fingers[0]
     o_pos = finger.tip_position.x, finger.tip_position.y, finger.tip_position.z
-    # o_vel = finger.tip_velocity.x, finger.tip_velocity.y, finger.tip_velocity.z
-    # o_dir = finger.direction.x, finger.direction.y, finger.direction.z
     move = []
     for _ in xrange(size):
         frame = ctrl.frame()
@@ -171,9 +193,15 @@ def acquire_move(ctrl, size, time_sleep=0.005):
             raise RuntimeError('Data acquisition stop by finger\'s id.')
 
         finger = frame.hands[0].fingers[0]
-        f_pos = finger.tip_position.x, finger.tip_position.y, finger.tip_position.z
-        f_vel = finger.tip_velocity.x, finger.tip_velocity.y, finger.tip_velocity.z
-        f_dir = finger.direction.x, finger.direction.y, finger.direction.z
+        f_pos = finger.tip_position.x, \
+            finger.tip_position.y, \
+            finger.tip_position.z
+        f_vel = finger.tip_velocity.x, \
+            finger.tip_velocity.y, \
+            finger.tip_velocity.z
+        f_dir = finger.direction.x, \
+            finger.direction.y, \
+            finger.direction.z
         f_dpos = map(lambda x: x[0] - x[1], zip(f_pos, o_pos))
         point = FingerPoint(f_dpos, f_vel, f_dir)
         move.append(point)
@@ -213,6 +241,7 @@ if __name__ == '__main__':
 
     cont = True
     moves = []
+    size = 100
 
     print 'Move name ?',
     name = raw_input()
@@ -222,7 +251,7 @@ if __name__ == '__main__':
         wait_move(ctrl)
         print 'Recording the move...'
         try:
-            move = FingerMove(name, acquire_move(ctrl, 100))
+            move = FingerMove(name, acquire_move(ctrl, size))
         except RuntimeError as e:
             print e.message
         else:
