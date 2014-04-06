@@ -9,7 +9,8 @@ from learner_mouse import Move
 
 if __name__ == '__main__':
     size = 20
-    move_files = ['left.mv', 'up.mv', 'down.mv', 'right.mv', 'null.mv']
+    move_files = ['assets/left.mv', 'assets/up.mv', 'assets/down.mv',
+            'assets/right.mv', 'assets/null.mv']
     moves = []
     for f_name in move_files:
         with open(f_name, 'r') as f:
