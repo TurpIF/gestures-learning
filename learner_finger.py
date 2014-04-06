@@ -180,7 +180,7 @@ def acquire_move(ctrl, size, time_sleep=0.005):
         time.sleep(time_sleep)
     return move
 
-def wait_move(ctrl, static_threashold=20):
+def wait_move(ctrl, static_threashold=10):
     """
     Wait and block until there is only one hand and one finger and the finger
     move by *static_threashold* distance.
