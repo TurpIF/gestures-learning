@@ -94,16 +94,37 @@ def acquire_move(size, time_sleep=0.005):
         time.sleep(time_sleep)
     return move
 
-if __name__ == '__main__':
-    mouse = pymouse.PyMouse()
+def wait_mouse_move(static_threashold=20):
+    """
+    Wait and block until the mouse move by *static_threashold*.
 
-    # Wait for the begin of the gesture
+    Arguments:
+    static_threashold -- Real : Distance the mouse has to move (default 20)
+    """
+    mouse = pymouse.PyMouse()
     o = mouse.position()
     static_threashold = 20
     while abs(mouse.position()[0] - o[0]) + abs(mouse.position()[1] - o[1]) \
             < static_threashold:
         time.sleep(0.01)
 
-    move = acquire_move(100)
+if __name__ == '__main__':
+    cont = True
+    moves = []
 
-    print ' '.join(map(lambda x: "%d %d" % x, move))
+    print 'Move name ?',
+    name = raw_input()
+
+    while cont:
+        print 'Waiting the beginning of the move...'
+        wait_mouse_move()
+        print 'Recording the move...'
+        move = Move('LEFT', acquire_move(100))
+        print 'Keep it ? (y/n)',
+        if raw_input() == 'y':
+            moves.append(move)
+            print 'Continue ? (y/n)',
+            cont = raw_input() == 'y'
+
+    if moves:
+        print 'Save moves into ? [%s]' % (name.lower() + '.mv'),
