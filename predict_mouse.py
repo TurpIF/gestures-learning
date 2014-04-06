@@ -67,7 +67,6 @@ import math
 from sklearn import svm
 from sklearn import neighbors
 
-
 def count_loops(t):
     """
     Count the number of loop executed in *t* seconds.
@@ -85,7 +84,7 @@ def count_loops(t):
 if __name__ == '__main__':
     # print count_loops(3) # ~= 20 000
 
-    size = 100
+    size = 20
     LEFT = map(lambda x: (-x, 0), xrange(size))
     RIGHT = map(lambda x: (x, 0), xrange(size))
     UP = map(lambda x: (0, -x), xrange(size))
@@ -110,17 +109,12 @@ if __name__ == '__main__':
     print XY
     X, Y = zip(*XY)
     X = map(lambda x: tuple(sum(map(list, x), [])), X)
-    print X
-    print Y[0], X[0]
-    print Y[1], X[1]
-    print Y[2], X[2]
 
     # learner = svm.LinearSVC()
     learner = neighbors.KNeighborsClassifier(weights='distance')
     predictor = learner.fit(X, Y)
 
     mouse = pymouse.PyMouse()
-
     hist_origin = []
     try:
         while True:
@@ -131,7 +125,7 @@ if __name__ == '__main__':
                 X = map(lambda x: (x[0] - o[0], x[1] - o[1]), hist_origin)
                 X = tuple(sum(map(list, X), []))
                 hist_origin = hist_origin[1:]
-                print predictor.predict(X)
+                print predictor.predict(X)[0]#, str(predictor.predict_proba(X)[0])
                 # print predictor.decision_function(X)
                 # print X
                 # print predictor.transform(X)
