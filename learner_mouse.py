@@ -67,7 +67,7 @@ class Move(object):
         IOError : When it's impossible to write into the file
         """
         try:
-            file.write(str(self))
+            file.write(str(self) + '\n')
         except IOError:
             raise
 
@@ -103,7 +103,6 @@ def wait_mouse_move(static_threashold=20):
     """
     mouse = pymouse.PyMouse()
     o = mouse.position()
-    static_threashold = 20
     while abs(mouse.position()[0] - o[0]) + abs(mouse.position()[1] - o[1]) \
             < static_threashold:
         time.sleep(0.01)
@@ -119,7 +118,7 @@ if __name__ == '__main__':
         print 'Waiting the beginning of the move...'
         wait_mouse_move()
         print 'Recording the move...'
-        move = Move('LEFT', acquire_move(100))
+        move = Move(name, acquire_move(100))
         print 'Keep it ? (y/n)',
         if raw_input() == 'y':
             moves.append(move)
@@ -127,4 +126,14 @@ if __name__ == '__main__':
             cont = raw_input() == 'y'
 
     if moves:
-        print 'Save moves into ? [%s]' % (name.lower() + '.mv'),
+        _f_name = name.lower() + '.mv'
+        print 'Save moves into ? [%s]' % _f_name,
+        f_name = raw_input()
+        if not f_name:
+            f_name = _f_name
+
+        print 'Saving into %s...' % f_name,
+        with open(f_name, 'w+') as f:
+            for m in moves:
+                m.save(f)
+        print 'OK'
