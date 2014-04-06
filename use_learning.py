@@ -17,6 +17,7 @@ if __name__ == '__main__':
                 'assets/circle.mv',
                 'assets/a.mv', 'assets/v.mv',
                 'assets/<.mv', 'assets/>.mv',
+                'assets/z.mv',
                 'assets/null.mv']
     moves = []
     for f_name in move_files:
