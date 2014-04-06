@@ -46,6 +46,12 @@ descriptions soit aplatie et ne forme qu'un tuple de réel.
 
 L'ajout de mouvement même simple est assez compliqué à analyser finalement. Les
 mouvements des diagonales sont ajoutés la prédiction devient très flou.
+
+En mettant un historique très court (5 éléments), la détection se fait plus
+rapidement et plus juste pour les mouvements très simple telle que le suivi
+d'une seule direction. On s'approche de l'identification de la dérivée du
+mouvement ce qui est assez aisé, en effet, à prédire dans le cas de mouvement
+unidirectionnel. Cependant, il est impossible d'avoir des mouvements compliqués avec cette courte durée.
 """
 
 import pymouse
@@ -71,12 +77,13 @@ def count_loops(t):
 if __name__ == '__main__':
     # print count_loops(3) # ~= 20 000
 
-    size = 30
+    size = 5
     LEFT = map(lambda x: (-x, 0), xrange(size))
     RIGHT = map(lambda x: (x, 0), xrange(size))
     UP = map(lambda x: (0, -x), xrange(size))
     DOWN = map(lambda x: (0, x), xrange(size))
-    CIRCLE = map(lambda x: (30 * math.cos(x * 2.0 * math.pi / size), 30 * math.sin(x * 2.0 * math.pi / size)), xrange(size))
+    CIRCLE = map(lambda x: (30 * math.cos(x * 2.0 * math.pi / size),
+        30 * math.sin(x * 2.0 * math.pi / size)), xrange(size))
     LT_RD = map(lambda x: (x, x), xrange(size))
     RD_LT = map(lambda x: (-x, -x), xrange(size))
     RT_LD = map(lambda x: (-x, x), xrange(size))
