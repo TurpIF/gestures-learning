@@ -13,7 +13,7 @@ from learner_finger import FingerMove, FingerPoint
 from learner_finger import wait_move
 
 if __name__ == '__main__':
-    size = 100
+    size = 20
     move_files = ['leap_assets/left.mv', 'leap_assets/right.mv',
                 'leap_assets/up.mv', 'leap_assets/down.mv',
                 'leap_assets/front.mv', 'leap_assets/back.mv',
