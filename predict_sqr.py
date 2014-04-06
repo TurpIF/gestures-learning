@@ -21,6 +21,7 @@ Il semble qu'avoir plusieurs représentation pour un même déplacement (en
 rajoutant du bruit sur les dx) ne favorise pas l'apprentissage et le détruit
 même.
 """
+
 from sklearn import svm
 import math
 import random
