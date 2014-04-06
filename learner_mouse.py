@@ -1,7 +1,6 @@
 import pymouse
 import time
 import sys
-from sklearn.neighbors import KNeighborsClassifier as Learner
 
 class Move(object):
     """
