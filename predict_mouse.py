@@ -51,7 +51,13 @@ En mettant un historique très court (5 éléments), la détection se fait plus
 rapidement et plus juste pour les mouvements très simple telle que le suivi
 d'une seule direction. On s'approche de l'identification de la dérivée du
 mouvement ce qui est assez aisé, en effet, à prédire dans le cas de mouvement
-unidirectionnel. Cependant, il est impossible d'avoir des mouvements compliqués avec cette courte durée.
+unidirectionnel. Cependant, il est impossible d'avoir des mouvements compliqués
+avec cette courte durée.
+
+Un KNeighborsClassifier avec une fonction de poids basé sur la distance semble
+plus adapté qu'un LinearSVC. En effet, la reconnaissance est très bonne quelque
+soit la taille de l'historique. Il est même possible de reconnaitre le
+mouvement d'un cercle.
 """
 
 import pymouse
@@ -59,6 +65,8 @@ import time
 import math
 
 from sklearn import svm
+from sklearn import neighbors
+
 
 def count_loops(t):
     """
@@ -77,7 +85,7 @@ def count_loops(t):
 if __name__ == '__main__':
     # print count_loops(3) # ~= 20 000
 
-    size = 5
+    size = 100
     LEFT = map(lambda x: (-x, 0), xrange(size))
     RIGHT = map(lambda x: (x, 0), xrange(size))
     UP = map(lambda x: (0, -x), xrange(size))
@@ -97,8 +105,8 @@ if __name__ == '__main__':
             + [(RD_LT, 'RD_LT')] \
             + [(RT_LD, 'RT_LD')] \
             + [(LD_RT, 'LD_RT')] \
+            + [(CIRCLE, 'CIRCLE')] \
             + [(NULL, 'NULL')]
-            # + [(CIRCLE, 'CIRCLE')] \
     print XY
     X, Y = zip(*XY)
     X = map(lambda x: tuple(sum(map(list, x), [])), X)
@@ -107,7 +115,8 @@ if __name__ == '__main__':
     print Y[1], X[1]
     print Y[2], X[2]
 
-    learner = svm.LinearSVC()
+    # learner = svm.LinearSVC()
+    learner = neighbors.KNeighborsClassifier(weights='distance')
     predictor = learner.fit(X, Y)
 
     mouse = pymouse.PyMouse()
