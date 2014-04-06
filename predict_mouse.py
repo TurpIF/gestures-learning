@@ -43,10 +43,15 @@ DOWN ont été intégré. Il n'est pas possible avec scikit learn d'utiliser des
 tuples de tuples pour décrire un mouvement. Cad un mouvement ne peut pas être
 (dM(t=0), ..., dM(t=T)) avec les dM un tuple (dx, dy) de R^2. Il faut que la
 descriptions soit aplatie et ne forme qu'un tuple de réel.
+
+L'ajout de mouvement même simple est assez compliqué à analyser finalement. Les
+mouvements des diagonales sont ajoutés la prédiction devient très flou.
 """
 
 import pymouse
 import time
+import math
+
 from sklearn import svm
 
 def count_loops(t):
@@ -66,17 +71,27 @@ def count_loops(t):
 if __name__ == '__main__':
     # print count_loops(3) # ~= 20 000
 
-    size = 20
+    size = 30
     LEFT = map(lambda x: (-x, 0), xrange(size))
     RIGHT = map(lambda x: (x, 0), xrange(size))
     UP = map(lambda x: (0, -x), xrange(size))
     DOWN = map(lambda x: (0, x), xrange(size))
+    CIRCLE = map(lambda x: (30 * math.cos(x * 2.0 * math.pi / size), 30 * math.sin(x * 2.0 * math.pi / size)), xrange(size))
+    LT_RD = map(lambda x: (x, x), xrange(size))
+    RD_LT = map(lambda x: (-x, -x), xrange(size))
+    RT_LD = map(lambda x: (-x, x), xrange(size))
+    LD_RT = map(lambda x: (x, -x), xrange(size))
     NULL = [(0, 0) for _ in xrange(size)]
     XY = [(LEFT, 'LEFT')] \
             + [(RIGHT, 'RIGHT')] \
             + [(UP, 'UP')] \
             + [(DOWN, 'DOWN')] \
+            + [(LT_RD, 'LT_RD')] \
+            + [(RD_LT, 'RD_LT')] \
+            + [(RT_LD, 'RT_LD')] \
+            + [(LD_RT, 'LD_RT')] \
             + [(NULL, 'NULL')]
+            # + [(CIRCLE, 'CIRCLE')] \
     print XY
     X, Y = zip(*XY)
     X = map(lambda x: tuple(sum(map(list, x), [])), X)
@@ -101,6 +116,9 @@ if __name__ == '__main__':
                 X = tuple(sum(map(list, X), []))
                 hist_origin = hist_origin[1:]
                 print predictor.predict(X)
+                # print predictor.decision_function(X)
+                # print X
+                # print predictor.transform(X)
             time.sleep(0.005)
     except KeyboardInterrupt:
         pass
