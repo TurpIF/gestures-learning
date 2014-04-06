@@ -9,7 +9,7 @@ from learner_mouse import Move
 from learner_mouse import wait_mouse_move
 
 if __name__ == '__main__':
-    size = 20
+    size = 100
     move_files = ['assets/left.mv', 'assets/right.mv',
                 'assets/up.mv', 'assets/down.mv',
                 'assets/lt_rd.mv', 'assets/rt_ld.mv',
