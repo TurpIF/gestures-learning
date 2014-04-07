@@ -34,6 +34,7 @@ class FingerPoint(object):
         info = list(self.position)
         info += list(self.velocity)
         info += list(self.direction)
+        # return '%f %f %f' % tuple(self.position)
         return '%f %f %f %f %f %f %f %f %f' % tuple(info)
 
     def to_tuple(self):
@@ -45,6 +46,7 @@ class FingerPoint(object):
         A tuple representation of the point.
         """
         ls = [self.position, self.velocity, self.direction]
+        # ls = [self.position]
         return tuple(sum(map(list, ls), []))
 
     @classmethod
@@ -73,6 +75,8 @@ class FingerPoint(object):
             raise e
 
         position = X[0], X[1], X[2]
+        # velocity = None
+        # direction = None
         velocity = X[3], X[4], X[5]
         direction = X[6], X[7], X[8]
         return cls(position, velocity, direction)
@@ -208,7 +212,7 @@ def acquire_move(ctrl, size, time_sleep=0.005):
         time.sleep(time_sleep)
     return move
 
-def wait_move(ctrl, static_threashold=10):
+def wait_move(ctrl, static_threashold=20):
     """
     Wait and block until there is only one hand and one finger and the finger
     move by *static_threashold* distance.

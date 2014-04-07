@@ -13,7 +13,7 @@ from learner_finger import FingerMove, FingerPoint
 from learner_finger import wait_move
 
 if __name__ == '__main__':
-    size = 20
+    size = 100
     move_files = ['leap_assets/left.mv', 'leap_assets/right.mv',
                 'leap_assets/up.mv', 'leap_assets/down.mv',
                 'leap_assets/front.mv', 'leap_assets/back.mv',
@@ -47,6 +47,8 @@ if __name__ == '__main__':
                 finger.tip_position.y, \
                 finger.tip_position.z
             for _ in xrange(size):
+                frame = ctrl.frame()
+                finger = frame.hands[0].fingers[0]
                 f_pos = finger.tip_position.x, \
                     finger.tip_position.y, \
                     finger.tip_position.z
